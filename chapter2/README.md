@@ -2,9 +2,9 @@
 |---|---|---|
 |1|GET:/customer|进入客户列表页面|
 |2|POST:/customer_search|查询客户|
-|3|GET:/customer_show?id|进入“查看客户”页面|
+|3|GET:/customer_show?id={id}|进入“查看客户”页面|
 |4|GET:/customer_create|进入“创建客户”页面|
 |5|POST:/customer_create|创建客户|
-|6|GET:
-|7|PUT:
-|8|DELETE:
+|6|GET:/customer_edit?id={id}|进入“编辑客户”页面|
+|7|PUT:/customer_edit?id={id}|编辑客户|
+|8|DELETE:/customer_delete?id={id}|删除客户|
