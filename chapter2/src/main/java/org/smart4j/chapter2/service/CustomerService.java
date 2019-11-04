@@ -3,6 +3,7 @@ package org.smart4j.chapter2.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.chapter2.model.Customer;
+import org.smart4j.chapter2.utils.CastUtil;
 import org.smart4j.chapter2.utils.PropsUtil;
 
 import java.sql.*;
@@ -74,7 +75,34 @@ public class CustomerService {
      * 获取客户
      */
     public Customer getCustomer(long id) {
-        //TODO
+        Connection conn = null;
+        try {
+            String sql = "select * from customer where id=?";
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+            Customer customer = new Customer();
+            while (rs.next()) {
+                customer.setId(id);
+                customer.setName(rs.getString("name"));
+                customer.setContact(rs.getString("contact"));
+                customer.setTelphone(rs.getString("telphone"));
+                customer.setEmail(rs.getString("email"));
+                customer.setRemark(rs.getString("remark"));
+            }
+            return customer;
+        } catch (SQLException e) {
+            log.error("execute sql failure", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("close connection failure", e);
+                }
+            }
+        }
         return null;
     }
 
@@ -82,7 +110,29 @@ public class CustomerService {
      * 创建客户
      */
     public boolean createCustomer(Map<String, Object> fieldMap) {
-        //TODO
+        Connection conn = null;
+        try {
+            String sql = "insert into customer(id,name,contact,telphone,email,remark) values (?,?,?,?,?,?)";
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, CastUtil.castLong(fieldMap.get("id")));
+            stmt.setString(2, CastUtil.castString(fieldMap.get("name")));
+            stmt.setString(3, CastUtil.castString(fieldMap.get("contact")));
+            stmt.setString(4, CastUtil.castString(fieldMap.get("telphone")));
+            stmt.setString(5, CastUtil.castString(fieldMap.get("email")));
+            stmt.setString(6, CastUtil.castString(fieldMap.get("remark")));
+            return stmt.execute(sql);
+        } catch (SQLException e) {
+            log.error("execute sql failure", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("close connection failure", e);
+                }
+            }
+        }
         return false;
     }
 
@@ -90,7 +140,29 @@ public class CustomerService {
      * 更新客户
      */
     public boolean updateCustomer(long id, Map<String, Object> fieldMap) {
-        //TODO
+        Connection conn = null;
+        try {
+            String sql = "update customer set name=?,contact=?,telphone=?,email=?,remark=? where id=?";
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, CastUtil.castString(fieldMap.get("name")));
+            stmt.setString(2, CastUtil.castString(fieldMap.get("contact")));
+            stmt.setString(3, CastUtil.castString(fieldMap.get("telphone")));
+            stmt.setString(4, CastUtil.castString(fieldMap.get("email")));
+            stmt.setString(5, CastUtil.castString(fieldMap.get("remark")));
+            stmt.setLong(6, CastUtil.castLong(fieldMap.get("id")));
+            return stmt.execute(sql);
+        } catch (SQLException e) {
+            log.error("execute sql failure", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("close connection failure", e);
+                }
+            }
+        }
         return false;
     }
 
@@ -98,7 +170,24 @@ public class CustomerService {
      * 删除客户
      */
     public boolean deleteCustomer(long id) {
-        //TODO
+        Connection conn = null;
+        try {
+            String sql = "delete from customer where id=?";
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, id);
+            return stmt.execute(sql);
+        } catch (SQLException e) {
+            log.error("execute sql failure", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("close connection failure", e);
+                }
+            }
+        }
         return false;
     }
 }
