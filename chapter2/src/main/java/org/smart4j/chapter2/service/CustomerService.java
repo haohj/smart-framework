@@ -2,38 +2,20 @@ package org.smart4j.chapter2.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smart4j.chapter2.helper.DatabaseHelper;
 import org.smart4j.chapter2.model.Customer;
 import org.smart4j.chapter2.utils.CastUtil;
-import org.smart4j.chapter2.utils.PropsUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 提供客户数据服务
  */
 public class CustomerService {
     private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
-    private static final String DIRVER;
-    private static final String URL;
-    private static final String USERNAME;
-    private static final String PASSWORD;
-
-    static {
-        Properties conf = PropsUtil.loadProps("config.properties");
-        DIRVER = conf.getProperty("jdbc.dirver");
-        URL = conf.getProperty("jdbc.url");
-        USERNAME = conf.getProperty("jdbc.username");
-        PASSWORD = conf.getProperty("jdbc.password");
-        try {
-            Class.forName(DIRVER);
-        } catch (ClassNotFoundException e) {
-            log.error("can not load jdbc dirver", e);
-        }
-    }
 
     /**
      * 获取客户列表
@@ -43,7 +25,7 @@ public class CustomerService {
         try {
             List<Customer> customerList = new ArrayList<>();
             String sql = "select * from customer";
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            conn = DatabaseHelper.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -61,11 +43,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.error("close connection failure", e);
-                }
+                DatabaseHelper.closeConnection(conn);
             }
         }
         return null;
@@ -78,7 +56,7 @@ public class CustomerService {
         Connection conn = null;
         try {
             String sql = "select * from customer where id=?";
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            conn = DatabaseHelper.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -96,11 +74,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.error("close connection failure", e);
-                }
+                DatabaseHelper.closeConnection(conn);
             }
         }
         return null;
@@ -113,7 +87,7 @@ public class CustomerService {
         Connection conn = null;
         try {
             String sql = "insert into customer(id,name,contact,telphone,email,remark) values (?,?,?,?,?,?)";
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            conn = DatabaseHelper.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, CastUtil.castLong(fieldMap.get("id")));
             stmt.setString(2, CastUtil.castString(fieldMap.get("name")));
@@ -126,11 +100,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.error("close connection failure", e);
-                }
+                DatabaseHelper.closeConnection(conn);
             }
         }
         return false;
@@ -143,7 +113,7 @@ public class CustomerService {
         Connection conn = null;
         try {
             String sql = "update customer set name=?,contact=?,telphone=?,email=?,remark=? where id=?";
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            conn = DatabaseHelper.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, CastUtil.castString(fieldMap.get("name")));
             stmt.setString(2, CastUtil.castString(fieldMap.get("contact")));
@@ -156,11 +126,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.error("close connection failure", e);
-                }
+                DatabaseHelper.closeConnection(conn);
             }
         }
         return false;
@@ -173,7 +139,7 @@ public class CustomerService {
         Connection conn = null;
         try {
             String sql = "delete from customer where id=?";
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            conn = DatabaseHelper.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, id);
             return stmt.execute(sql);
@@ -181,11 +147,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.error("close connection failure", e);
-                }
+                DatabaseHelper.closeConnection(conn);
             }
         }
         return false;
