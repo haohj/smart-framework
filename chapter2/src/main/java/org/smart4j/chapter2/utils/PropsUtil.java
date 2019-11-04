@@ -82,13 +82,17 @@ public class PropsUtil {
      * 获取布尔型属性（默认值为false）
      */
     public static boolean getBoolean(Properties properties, String key) {
-        return false;
+        return getBoolean(properties, key, false);
     }
 
     /**
      * 获取布尔型属性（可指定默认值）
      */
     public static boolean getBoolean(Properties properties, String key, boolean defaultValue) {
-        return defaultValue;
+        boolean value = defaultValue;
+        if (properties.containsKey(key)) {
+            value = CastUtil.castBoolean(properties.getProperty(key));
+        }
+        return value;
     }
 }
