@@ -21,32 +21,14 @@ public class CustomerService {
      * 获取客户列表
      */
     public List<Customer> getCustomerList() {
-        Connection conn = null;
+        Connection conn = DatabaseHelper.getConnection();
         try {
-            List<Customer> customerList = new ArrayList<>();
             String sql = "select * from customer";
-            conn = DatabaseHelper.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Customer customer = new Customer();
-                customer.setId(rs.getLong("id"));
-                customer.setName(rs.getString("name"));
-                customer.setContact(rs.getString("contact"));
-                customer.setTelphone(rs.getString("telphone"));
-                customer.setEmail(rs.getString("email"));
-                customer.setRemark(rs.getString("remark"));
-                customerList.add(customer);
-            }
+            List<Customer> customerList = DatabaseHelper.queryEntityList(Customer.class, conn, sql);
             return customerList;
-        } catch (SQLException e) {
-            log.error("execute sql failure", e);
         } finally {
-            if (conn != null) {
-                DatabaseHelper.closeConnection(conn);
-            }
+            DatabaseHelper.closeConnection(conn);
         }
-        return null;
     }
 
     /**
