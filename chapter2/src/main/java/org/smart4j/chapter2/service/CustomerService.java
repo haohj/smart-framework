@@ -7,7 +7,6 @@ import org.smart4j.chapter2.model.Customer;
 import org.smart4j.chapter2.utils.CastUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +20,12 @@ public class CustomerService {
      * 获取客户列表
      */
     public List<Customer> getCustomerList() {
-        Connection conn = DatabaseHelper.getConnection();
         try {
             String sql = "select * from customer";
-            List<Customer> customerList = DatabaseHelper.queryEntityList(Customer.class, conn, sql);
+            List<Customer> customerList = DatabaseHelper.queryEntityList(Customer.class, sql);
             return customerList;
         } finally {
-            DatabaseHelper.closeConnection(conn);
+            DatabaseHelper.closeConnection();
         }
     }
 
@@ -56,7 +54,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                DatabaseHelper.closeConnection(conn);
+                DatabaseHelper.closeConnection();
             }
         }
         return null;
@@ -82,7 +80,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                DatabaseHelper.closeConnection(conn);
+                DatabaseHelper.closeConnection();
             }
         }
         return false;
@@ -102,13 +100,13 @@ public class CustomerService {
             stmt.setString(3, CastUtil.castString(fieldMap.get("telphone")));
             stmt.setString(4, CastUtil.castString(fieldMap.get("email")));
             stmt.setString(5, CastUtil.castString(fieldMap.get("remark")));
-            stmt.setLong(6, CastUtil.castLong(fieldMap.get("id")));
+            stmt.setLong(6, id);
             return stmt.execute(sql);
         } catch (SQLException e) {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                DatabaseHelper.closeConnection(conn);
+                DatabaseHelper.closeConnection();
             }
         }
         return false;
@@ -129,7 +127,7 @@ public class CustomerService {
             log.error("execute sql failure", e);
         } finally {
             if (conn != null) {
-                DatabaseHelper.closeConnection(conn);
+                DatabaseHelper.closeConnection();
             }
         }
         return false;
