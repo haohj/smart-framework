@@ -20,13 +20,8 @@ public class CustomerService {
      * 获取客户列表
      */
     public List<Customer> getCustomerList() {
-        try {
-            String sql = "select * from customer";
-            List<Customer> customerList = DatabaseHelper.queryEntityList(Customer.class, sql);
-            return customerList;
-        } finally {
-            DatabaseHelper.closeConnection();
-        }
+        String sql = "select * from customer";
+        return DatabaseHelper.queryEntityList(Customer.class, sql);
     }
 
     /**
