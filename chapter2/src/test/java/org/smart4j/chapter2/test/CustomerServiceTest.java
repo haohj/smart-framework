@@ -3,9 +3,14 @@ package org.smart4j.chapter2.test;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.smart4j.chapter2.helper.DatabaseHelper;
 import org.smart4j.chapter2.model.Customer;
 import org.smart4j.chapter2.service.CustomerService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +26,15 @@ public class CustomerServiceTest {
     }
 
     @Before
-    public void init() {
+    public void init() throws IOException {
         //TODO 初始化数据库
+        String file = "sql/customer_init.sql";
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String sql;
+        while ((sql = reader.readLine()) != null) {
+            DatabaseHelper.executeUpdate(sql);
+        }
     }
 
     @Test

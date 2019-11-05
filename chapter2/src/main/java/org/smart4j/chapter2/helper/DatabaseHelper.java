@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.smart4j.chapter2.utils.CollectionUtil;
 import org.smart4j.chapter2.utils.PropsUtil;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,6 +176,24 @@ public class DatabaseHelper {
     public static <T> boolean deleteEntity(Class<T> entityClass, long id) {
         String sql = "delete from " + getTableName(entityClass) + " where id=?";
         return executeUpdate(sql, id) == 1;
+    }
+
+    /**
+     * 执行sql文件
+     * */
+    public static void executeSqlFile(String filePath) {
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        try {
+            String sql;
+            while ((sql = reader.readLine()) != null) {
+                executeUpdate(sql);
+            }
+        } catch (Exception e) {
+            log.error("execute sql file failure", e);
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
