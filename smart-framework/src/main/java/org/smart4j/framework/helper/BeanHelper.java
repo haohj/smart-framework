@@ -13,7 +13,7 @@ public class BeanHelper {
     /**
      * 定义Bean映射（用于存放Bean类与Bean实例的映射关系）
      */
-    public static final Map<Class<?>, Object> BEAN_MAP = new HashMap<>();
+    private static final Map<Class<?>, Object> BEAN_MAP = new HashMap<>();
 
     static {
         Set<Class<?>> classSet = ClassHelper.getBeanClassSet();
