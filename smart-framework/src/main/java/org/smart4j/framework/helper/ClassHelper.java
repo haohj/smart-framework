@@ -14,7 +14,7 @@ public class ClassHelper {
     /**
      * 定义类集合（用于存放所加载的类）
      */
-    public static final Set<Class<?>> CLASS_SET;
+    private static final Set<Class<?>> CLASS_SET;
 
     static {
         String basePackage = ConfigHelper.getAppBasePackage();
