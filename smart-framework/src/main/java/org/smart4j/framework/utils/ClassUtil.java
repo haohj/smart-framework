@@ -43,6 +43,20 @@ public class ClassUtil {
     }
 
     /**
+     * 加载类
+     */
+    public static Class<?> loadClass(String className) {
+        Class<?> cls = null;
+        try {
+            cls = Class.forName(className, false, getClassLoader());
+        } catch (ClassNotFoundException e) {
+            log.error("class load failure", e);
+            throw new RuntimeException(e);
+        }
+        return cls;
+    }
+
+    /**
      * 获取指定包名下的所有类
      */
     public static Set<Class<?>> getClassSet(String packageName) {
