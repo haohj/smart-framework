@@ -6,9 +6,13 @@ import java.lang.reflect.Method;
  * 封装Action信息
  */
 public class Handler {
-    //Controller类
+    /**
+     * Controller类
+     * */
     private Class<?> controllerClass;
-    //Action方法
+    /**
+     * Action方法
+     * */
     private Method actionMethod;
 
     public Handler(Class<?> controllerClass, Method actionMethod) {
