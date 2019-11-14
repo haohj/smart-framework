@@ -13,6 +13,9 @@ public class CodecUtil {
 
     /**
      * 将URL编码
+     *
+     * @param source
+     * @return
      */
     public static String encodeURL(String source) {
         String target;
@@ -27,6 +30,9 @@ public class CodecUtil {
 
     /**
      * 将URL解码
+     *
+     * @param source
+     * @return
      */
     public static String decodeURL(String source) {
         String target;
