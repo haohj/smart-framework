@@ -50,8 +50,12 @@ public class ControllerHelper {
             }
         });
     }
-    /**
-     *获取 Handler
-     * */
 
+    /**
+     * 获取 Handler
+     */
+    public static Handler getHandler(String requestMethod, String requestPath) {
+        Request request = new Request(requestMethod,requestPath);
+        return ACTION_MAP.get(request);
+    }
 }
