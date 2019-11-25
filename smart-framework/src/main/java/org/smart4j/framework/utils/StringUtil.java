@@ -18,8 +18,12 @@ public class StringUtil {
 
     /**
      * 判断字符串是否非空
-     * */
-    public static boolean isNotEmpty(String str){
+     */
+    public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
+    }
+
+    public static String[] splitString(String body, String s) {
+        return body.split(s);
     }
 }
