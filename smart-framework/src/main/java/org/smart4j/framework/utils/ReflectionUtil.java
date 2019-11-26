@@ -1,6 +1,7 @@
 package org.smart4j.framework.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -9,7 +10,7 @@ import java.lang.reflect.Method;
  * 反射工具类
  */
 public class ReflectionUtil {
-    public static final Logger log = Logger.getLogger(ReflectionUtil.class);
+    public static final Logger log = LoggerFactory.getLogger(ReflectionUtil.class);
 
     /**
      * 创建实例

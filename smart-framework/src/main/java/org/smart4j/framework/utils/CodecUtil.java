@@ -1,6 +1,7 @@
 package org.smart4j.framework.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -9,7 +10,7 @@ import java.net.URLEncoder;
  * 编码与解码操作工具类
  */
 public class CodecUtil {
-    private static final Logger log = Logger.getLogger(CodecUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(CodecUtil.class);
 
     /**
      * 将URL编码
