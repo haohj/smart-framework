@@ -19,7 +19,12 @@ import static org.smart4j.framework.utils.DBUtil.getConnection;
  */
 public class DatabaseHelper {
     private static final Logger log = LoggerFactory.getLogger(DatabaseHelper.class);
-    //private static CONNECTION_HOLDER
+    private static final ThreadLocal<Connection> CONNECTION_HOLDER = new ThreadLocal<Connection>(){
+        @Override
+        protected Connection initialValue() {
+            return getConnection();
+        }
+    };
 
     /**
      * 开启事务
@@ -28,13 +33,12 @@ public class DatabaseHelper {
         Connection conn = getConnection();
         if (conn != null) {
             try {
-                conn.setAutoCommit(true);
+                conn.setAutoCommit(false);
             } catch (SQLException e) {
                 log.error("begin transaction failure", e);
                 throw new RuntimeException(e);
             } finally {
-                //TODO 暂时不清楚这个是什么类，有什么方法
-                //CONNECTION_HOLDER.set(conn);
+                CONNECTION_HOLDER.set(conn);
             }
         }
     }
@@ -52,7 +56,7 @@ public class DatabaseHelper {
                 log.error("commit transaction failure", e);
                 throw new RuntimeException(e);
             } finally {
-                //CONNECTION_HOLDER.remove();
+                CONNECTION_HOLDER.remove();
             }
         }
     }
@@ -70,7 +74,7 @@ public class DatabaseHelper {
                 log.error("rollback transaction failure", e);
                 throw new RuntimeException(e);
             } finally {
-                //CONNECTION_HOLDER.remove();
+                CONNECTION_HOLDER.remove();
             }
         }
     }
