@@ -3,9 +3,11 @@ package org.smart4j.framework.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.framework.annotation.Aspect;
+import org.smart4j.framework.annotation.Service;
 import org.smart4j.framework.proxy.AspectProxy;
 import org.smart4j.framework.proxy.Proxy;
 import org.smart4j.framework.proxy.ProxyManager;
+import org.smart4j.framework.proxy.TransactionProxy;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -33,6 +35,18 @@ public final class AOPHelper {
 
     private static Map<Class<?>, Set<Class<?>>> createProxyMap() throws Exception {
         Map<Class<?>, Set<Class<?>>> proxyMap = new HashMap<>();
+        addAspectProxy(proxyMap);
+        addTransactionProxy(proxyMap);
+        return proxyMap;
+    }
+
+    private static void addTransactionProxy(Map<Class<?>, Set<Class<?>>> proxyMap) {
+        //获取Service注解的所有类
+        Set<Class<?>> serviceClassSet = ClassHelper.getClassSetByAnnotation(Service.class);
+        proxyMap.put(TransactionProxy.class,serviceClassSet);
+    }
+
+    private static void addAspectProxy(Map<Class<?>, Set<Class<?>>> proxyMap) throws Exception{
         //获取AspectProxy的所有子类
         Set<Class<?>> proxyClassSet = ClassHelper.getClassSetBySuper(AspectProxy.class);
         //遍历所有子类
@@ -45,7 +59,6 @@ public final class AOPHelper {
                 proxyMap.put(proxyClass, targetClassSet);
             }
         }
-        return proxyMap;
     }
 
     private static Set<Class<?>> createTargetSet(Aspect aspect) throws Exception {
