@@ -1,5 +1,8 @@
 package org.smart4j.framework.helper;
 
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.framework.model.Customer;
@@ -19,7 +22,7 @@ import static org.smart4j.framework.utils.DBUtil.getConnection;
  */
 public class DatabaseHelper {
     private static final Logger log = LoggerFactory.getLogger(DatabaseHelper.class);
-    private static final ThreadLocal<Connection> CONNECTION_HOLDER = new ThreadLocal<Connection>(){
+    private static final ThreadLocal<Connection> CONNECTION_HOLDER = new ThreadLocal<Connection>() {
         @Override
         protected Connection initialValue() {
             return getConnection();
@@ -84,7 +87,14 @@ public class DatabaseHelper {
      * @param sql 查询语句
      * @return
      */
-    public static List<Customer> queryEntityList(Class<?> cls, String sql) {
+    public static <T> List<T> queryEntityList(Class<T> cls, String sql) {
+        Connection conn = CONNECTION_HOLDER.get();
+        QueryRunner qr = new QueryRunner();
+        try {
+            List<T> list = qr.query(conn, sql, new BeanListHandler<T>(cls));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -94,7 +104,14 @@ public class DatabaseHelper {
      * @param params
      * @return
      */
-    public static Customer queryEntity(Class<?> cls, String sql, Object... params) {
+    public static <T> T queryEntity(Class<T> cls, String sql, Object... params) {
+        Connection conn = CONNECTION_HOLDER.get();
+        QueryRunner qr = new QueryRunner();
+        try {
+            T t = qr.query(conn, sql, new BeanHandler<>(cls), params);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -105,7 +122,21 @@ public class DatabaseHelper {
      * @param fieldMap
      * @return
      */
-    public static boolean insertEntity(Class<?> cls, Map<String, Object> fieldMap) {
+    public static <T> boolean insertEntity(Class<T> cls, Map<String, Object> fieldMap) {
+        Connection conn = CONNECTION_HOLDER.get();
+        QueryRunner qr = new QueryRunner();
+        StringBuffer sb = new StringBuffer("insert into ").append(cls.getName()).append("(");
+        for(String key:fieldMap.keySet()){
+            sb.append(key).append(",");
+            fieldMap.get(key);
+        }
+        sb.deleteCharAt(sb.length()-1).append(") values (");
+
+        try {
+            qr.insert(conn, "", new BeanHandler<>(cls));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -115,7 +146,9 @@ public class DatabaseHelper {
      * @param fieldMap
      * @return
      */
-    public static boolean updateEntity(Class<?> cls, Object id, Map<String, Object> fieldMap) {
+    public static <T> boolean updateEntity(Class<T> cls, Object id, Map<String, Object> fieldMap) {
+        Connection conn = CONNECTION_HOLDER.get();
+        QueryRunner qr = new QueryRunner();
         return false;
     }
 
@@ -124,7 +157,18 @@ public class DatabaseHelper {
      * @param id
      * @return
      */
-    public static boolean deleteEntity(Class<?> cls, Object id) {
+    public static <T> boolean deleteEntity(Class<T> cls, Object id) {
+        Connection conn = CONNECTION_HOLDER.get();
+        QueryRunner qr = new QueryRunner();
+        try {
+            //TODO 不完整，需要注解标注主键字段
+            int i = qr.update(conn, "delete from " + cls.getName() + " where id=?", id);
+            if (i > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }
